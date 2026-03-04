@@ -15,6 +15,7 @@ const {
 const { buildSmithyTypeScript } = require("./build-smithy-typescript");
 const { SMITHY_TS_COMMIT } = require("./config");
 const { spawnProcess } = require("../utils/spawn-process");
+const { stripHtmlFromDocs } = require("./strip-html-from-docs");
 
 const REPO_ROOT = path.join(__dirname, "..", "..");
 const SMITHY_TS_DIR = path.normalize(path.join(__dirname, "..", "..", "..", "smithy-typescript"));
@@ -112,6 +113,10 @@ const {
 
     const compress = require("../endpoints-ruleset/compress");
     compress();
+
+    // Strip HTML tags from JSDoc comments in generated model files.
+    // See https://github.com/aws/aws-sdk-js-v3/issues/6876
+    stripHtmlFromDocs(clientsDir);
 
     if (!keepFiles) {
       emptyDirSync(CODE_GEN_SDK_OUTPUT_DIR);
